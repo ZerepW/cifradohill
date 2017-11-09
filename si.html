@@ -19,8 +19,8 @@
         <form>
             <div class="form-group">
                 <label for="alfabeto">Alfabeto</label>
-                <input type="text" class="form-control" id="alfabeto" aria-describedby="alfabeto" placeholder="EJEMPLO: ABCDEF1234" maxlength="256">
-                <small id="emailHelp" class="form-text text-muted">Alfabeto a utilizar, máximo 256 caracteres.</small>
+                <input type="text" class="form-control text-uppercase" id="alfabeto" aria-describedby="alfabeto" placeholder="EJEMPLO: ABCDEF1234" maxlength="256">
+                <small id="alfabetoHelp" class="form-text text-muted">Alfabeto a utilizar, máximo 256 caracteres.</small>
             </div><br>
 
             <div class="form-group">
@@ -36,11 +36,11 @@
             <div class="row">
                 <div class="form-group col-sm-6">
                     <label for="cifrar">Texto a Cifrar/Descifrar</label>
-                    <textarea class="form-control" id="cifrar" rows="4">Texto de Ejemplo</textarea>
+                    <textarea class="form-control text-uppercase" id="cifrar" rows="4">Texto de Ejemplo</textarea>
                 </div>
                 <div class="form-group col-sm-6">
                     <label for="clave">Clave</label>
-                    <textarea class="form-control" id="clave" rows="4">ClaveEjemplo</textarea>
+                    <textarea class="form-control text-uppercase" id="clave" rows="4">ClaveEjemplo</textarea>
                 </div>
             </div><br>
         </form>
@@ -64,16 +64,61 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
     <script>
         function cifrar(){
+            alfabeto = document.getElementById("alfabeto");
+            alfabeto = alfabeto.value.toUpperCase();
+            
             textocifrar = document.getElementById("cifrar");
-            textocifrar = textocifrar.value;
+            textocifrar = textocifrar.value.toUpperCase();
             textocifrarlong = textocifrar.length;
+            
+            clave = document.getElementById("clave");
+            clave = clave.value.toUpperCase();
+            clavelong = clave.length;
 
             nmatriz = document.getElementById("matriz");
             nmatriz = nmatriz.value;
 
-            multiplo = textocifrarlong % nmatriz;
+            multiplo = textocifrarlong % nmatriz; //CHECAR SI ES MULTIPLO DE N
+            permitido = true;
 
-            alert(textocifrar + " Longitud: " + textocifrarlong + " Matriz: " + nmatriz + " Modulo: " + multiplo);
+            if(multiplo == 0){
+                for (var i = 0; i < textocifrar.length; i++) {
+                    var indice = null;
+		    		for (var x = 0; x < alfabeto.length; x++) {
+		    			if(alfabeto[x] == textocifrar[i]){
+		    				indice = x;
+		    				break;
+		    			}
+		    		}
+		    		if(indice == null){
+		    			permitido=false;
+                        break;
+		    		}
+                }
+                if(permitido){
+                    if((nmatriz*nmatriz)==clavelong){ //LA CLAVE ES UNA RC Exacta
+                        result = "";
+                        for(var bloq = 0; bloq<textocifrarlong; bloq += parseInt(nmatriz)){
+                            var arregloC = [];
+                            for(var indice = 0; indice < nmatriz; indice++){
+                                arregloC.push(parseInt(bloq)+parseInt(indice));
+                            }
+                            for(var indice = 0; indice < nmatriz; indice++){
+                                arregloC
+                                alert(arregloC[indice]);
+                            }
+                            alert("Arreglo C: " + arregloC);
+                        }
+                    }else{
+                        alert("ERROR! La clave no es una raiz cuadrada exacta");
+                    }
+                }else{
+                    alert("ERROR! Hay letras que no están en el abecedario")
+                }
+            }else{
+                alert("ERROR! El texto a cifrar no es multiplo de N");
+            }
+            
         }
         function descifrar(){
             alert("Estoy descifrando!");
