@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Seguridad Informática - Cifrado Hill</title>
+    <style>
+        label{
+            font-weight: bold;
+        }
+    </style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous"> 
+</head>
+<body style="background-color:#eeeeee;padding-top:15px;">
+    <div class="container" style="padding-top:20px; background-color:#fff; border-radius:15px;">
+        <h1>Cifrado Hill (Matrices NxN)</h1>
+        <hr><br>
+        <form>
+            <div class="form-group">
+                <label for="alfabeto">Alfabeto</label>
+                <input type="text" class="form-control" id="alfabeto" aria-describedby="alfabeto" placeholder="EJEMPLO: ABCDEF1234">
+                <small id="emailHelp" class="form-text text-muted">Alfabeto a utilizar, máximo 256 caracteres.</small>
+            </div><br>
+            <div class="row">
+                <div class="form-group col-sm-6">
+                    <label for="cifrar">Texto a Cifrar/Descifrar</label>
+                    <textarea class="form-control" id="cifrar" rows="4">Texto de Ejemplo</textarea>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label for="clave">Clave</label>
+                    <textarea class="form-control" id="clave" rows="4">ClaveEjemplo</textarea>
+                </div>
+            </div><br>
+            <center>
+                <button type="" class="btn btn-outline-primary btn-lg">Cifrar</button>
+                <button type="" class="btn btn-outline-success btn-lg">Descifrar</button>
+                <button type="" class="btn btn-outline-warning btn-lg">Limpiar</button>
+            </center>
+        </form><br>
+            <div class="form-group">
+                <label for="clave">Resultado</label>
+                <textarea class="form-control" id="clave" rows="4">ASDHASDFGG</textarea>
+            </div>
+            <hr>
+            <span class="float-left">Hecho por <a href="http://luisarturozerep.cloudapp.net">Luis Arturo Pérez Díaz</a> || Alma Karolina Barrera Rodríguez</span>
+            <span class="float-right"><a href="http://antonioch.com">Seguridad Informática AD 2017</a></span><br><br><br>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+</body>
+</html>
