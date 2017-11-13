@@ -53,7 +53,7 @@
         <br>
             <div class="form-group">
                 <label for="clave">Resultado</label>
-                <textarea class="form-control" id="resultado" rows="4">ASDHASDFGG</textarea>
+                <textarea class="form-control" id="resultado" rows="4">Resultado</textarea>
             </div>
             <hr>
             <span class="float-left">Hecho por <a href="http://luisarturozerep.cloudapp.net">Luis Arturo Pérez Díaz</a> || Alma Karolina Barrera Rodríguez</span>
@@ -198,7 +198,18 @@
             alert("Estoy descifrando!");
         }
         function limpiar(){
-            alert("Estoy limpiando!");
+            
+            alfabeto = document.getElementById("alfabeto"); //INPUT DEL ALFABETO
+            alfabeto.value = "";
+            
+            textocifrar = document.getElementById("cifrar"); // INPUT DEL TEXTO A CIFRAR
+            textocifrar.value = "";
+
+            resultadoArea = document.getElementById("resultado");
+            resultadoArea.value = "";
+
+            clave = document.getElementById("clave"); // INPUT DE LA CLAVE
+            clave.value = "";
         }
     </script>
 </body>
