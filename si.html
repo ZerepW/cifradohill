@@ -195,7 +195,248 @@
             
         }
         function descifrar(){
-            alert("Estoy descifrando!");
+            alfabeto = document.getElementById("alfabeto"); //INPUT DEL ALFABETO
+            alfabeto = alfabeto.value.toUpperCase();
+            
+            textocifrar = document.getElementById("cifrar"); // INPUT DEL TEXTO A CIFRAR
+            textocifrar = textocifrar.value.toUpperCase();
+            textocifrarlong = textocifrar.length;
+
+            resultadoArea = document.getElementById("resultado");
+            
+            clave = document.getElementById("clave"); // INPUT DE LA CLAVE
+            clave = clave.value.toUpperCase();
+            clavelong = clave.length;
+
+            nmatriz = document.getElementById("matriz"); // INPUT DE LA MATRIZ NXN
+            nmatriz = nmatriz.value;
+
+            multiplo = textocifrarlong % nmatriz; //CHECAR SI ES MULTIPLO DE N
+            permitido = true;
+
+            if(multiplo == 0){ //Texto debe ser multiplo de N
+                for (var i = 0; i < textocifrar.length; i++) { //Comprueba que las letras del texto a cifraresten en el alfabeto
+                    var indice = null;
+		    		for (var x = 0; x < alfabeto.length; x++) {
+		    			if(alfabeto[x] == textocifrar[i]){
+		    				indice = x;
+		    				break;
+		    			}
+		    		}
+		    		if(indice == null){
+		    			permitido=false;
+                        break;
+		    		}
+                }
+                for (var i = 0; i < clavelong; i++) { //Comprueba que las letras de la clave esten en el alfabeto
+                    var indice = null;
+		    		for (var x = 0; x < alfabeto.length; x++) {
+		    			if(alfabeto[x] == clave[i]){
+		    				indice = x;
+		    				break;
+		    			}
+		    		}
+		    		if(indice == null){
+		    			permitido=false;
+                        break;
+		    		}
+                }
+                
+
+                if(permitido){ //Si no hay errores
+                    var arrAlfabeto =[];
+                    for(var i = 0; i<alfabeto.length;i++){ //Comprobar que no haya letras repetidas en el alfabeto
+                        for(var x = 0; x<arrAlfabeto.length;x++){
+                            if(alfabeto[i] == arrAlfabeto[x]){
+                                permitido = false;
+                                break;
+                            }
+                        }
+                        if(permitido == true){
+                            arrAlfabeto.push(alfabeto[i]);
+                        }else{
+                            break;
+                        }
+                    }
+                    if(permitido){ //Si no hay letras que se repitan en el alfabeto
+                        if((nmatriz*nmatriz)==clavelong){ //SI LA CLAVE ES UNA RAIZ CUADRADA Exacta
+                            var matrizClave = [];
+                            for(var i = 0; i<clavelong;i++){
+                                for(var x = 0; x<arrAlfabeto.length;x++){
+                                    if(clave[i] == arrAlfabeto[x]){
+                                        matrizClave.push(x);
+                                        break;
+                                    }
+                                }
+                            }
+                            var matrizDividida = []; //Matriz Mij
+                            for(var i = 0;i<parseInt(nmatriz);i++){
+                                var matrizPrueba = [];
+                                for(var j = 0;j<parseInt(nmatriz);j++){
+                                    matrizPrueba.push(matrizClave[j+(i*parseInt(nmatriz))]);
+                                }
+                                matrizDividida.push(matrizPrueba);
+                            }
+                            var mTranspuesta = transpuesta(adjunta(matrizDividida,parseInt(nmatriz)),(parseInt(nmatriz)));
+                            var determinante = sarrus(mTranspuesta,nmatriz,0,0);
+                            var divDeterminante = (arrAlfabeto.length+1)/determinante;
+                            var matrizClaveT = [];
+                            for(var i = 0; i<nmatriz;i++){
+                                for(var x = 0;x<nmatriz;x++){
+                                    matrizClaveT.push(Math.abs((mTranspuesta[i][x]* divDeterminante) % arrAlfabeto.length));
+                                }
+                            }
+                            
+                            //alert(mTranspuesta);
+                            //alert(matrizClave);
+                            var matrizRes = [];
+                            for(var i = 0; i<textocifrar.length;i += parseInt(nmatriz)){
+                                var matrizCL = [];
+                                for(var x = 0; x<parseInt(nmatriz);x++){
+                                    matrizCL.push(textocifrar[i+x]);
+                                }
+                                var matrizCLNum = [];
+                                for(var x = 0; x<matrizCL.length; x++){
+                                    for(var y = 0; y<arrAlfabeto.length;y++){
+                                        if(matrizCL[x] == arrAlfabeto[y]){
+                                            matrizCLNum.push(y);
+                                            break;
+                                        }
+                                    }
+                                }
+                                //alert(matrizCL + " " + matrizCLNum);
+                                for(var x = 0; x<parseInt(nmatriz); x++){
+                                    var aux = 0;
+                                    for(var y = 0;y<matrizCLNum.length;y++){
+                                        aux += matrizCLNum[y] * matrizClaveT[y+(x*parseInt(nmatriz))];
+                                        
+                                        //alert(matrizCLNum[y] + " x " + matrizClaveT[y+(x*parseInt(nmatriz))] + "=" + aux);
+                                    }
+                                    //alert("next");
+                                    aux = aux % arrAlfabeto.length;
+                                    matrizRes.push(aux);
+                                    aux = 0;
+                                }
+                                matrizCL = [];   
+                                matrizCLNum = [];                             
+                            }
+                            var resultado = "";                            
+                            for(var i = 0; i< matrizRes.length;i++){ // Metemos el resultado a una variable
+                                for(var x = 0; x< arrAlfabeto.length;x++){
+                                    if(matrizRes[i] == x){
+                                        resultado = resultado + arrAlfabeto[x];
+                                    }
+                                }
+                            }
+                            alert(resultado);
+                            resultadoArea.value = resultado;
+                            //alert(resultado);
+                        }
+                    }
+                }
+            }
+
+        }
+        function resolverAdjunta(matriz){
+            return matriz[1][1]*matriz[0][0] - matriz[1][0]*matriz[0][1];
+        }
+        function adjunta(matriz,n){
+            var adjuntaMatriz = [];
+            if(n==2){
+                var adjuntaAux = [];
+                adjuntaAux.push(matriz[1][1]);
+                adjuntaAux.push(-matriz[1][0]);
+                adjuntaMatriz.push(adjuntaAux);
+                var adjuntaAux2 = [];
+                adjuntaAux2.push(-matriz[0][1]);
+                adjuntaAux2.push(matriz[0][0]);
+                adjuntaMatriz.push(adjuntaAux2);   
+            }else {
+                if(n==3){
+                    signo = 1;
+                    for(var i = 0;i<n;i++){
+                        adjuntaMatriz.push([]);
+                        for(var x = 0; x<n; x++){
+                            var aux = 0;
+                            var matrizAux = [];
+                            for(var z = 0; z<n-1;z++){
+                                matrizAux.push([]);;
+                            }   
+                            for(var y = 0;y<n;y++){
+                                if(y!=i){
+                                    for(var w = 0; w<n; w++){
+                                        if(w!= x){
+                                            matrizAux[aux].push(matriz[y][w]);
+                                        }
+                                    }
+                                aux++;
+                                }
+                            }
+                            aux = 0;
+                            adjuntaMatriz[i].push(resolverAdjunta(matrizAux)*signo);
+                            signo = signo *-1;
+                        }
+                    }
+                }else{
+                    for(var i = 0;i<n;i++){
+                        adjuntaMatriz.push([]);
+                        for(var x = 0; x<n; x++){
+                            var aux = 0;
+                            var matrizAux = [];
+                            for(var z = 0; z<n-1;z++){
+                                matrizAux.push([]);;
+                            } 
+                            for(var y = 0;y<n;y++){
+                                if(y!=i){
+                                    for(var w = 0; w<n; w++){
+                                        if(w!= x){
+                                            matrizAux[aux].push(matriz[y][w]);
+                                        }
+                                    }
+                                aux++;
+                                }
+                            }  
+                            aux = 0;
+                            adjuntaMatriz[i].push(sarrus(matrizAux,n,i,x));
+                            alert(adjuntaMatriz);
+                        }
+                    }
+                }
+            }
+            return adjuntaMatriz;
+        }
+        function sarrus(matriz,total,indice,x){
+            var resultado = 0;
+            for(var i = 0;i<total;i++){
+                for(var x = 0;x<total;x++){
+                    var resultadoaux = 1;
+                    resultadoaux = resultadoaux * matriz[i][x];
+                    i++;
+                }
+                resultado += resultadoaux;
+            }
+            var resultadoaux2 = 0;
+            for(var i = total-1;i>0;i--){
+                    var resultadoaux = 1;
+                for(var x = 0;x<total;x++){
+                    resultadoaux = resultadoaux * matriz[i][x];
+                    i--;
+                }
+                resultadoaux2 += resultadoaux;
+            }
+            return (resultado-resultadoaux2);
+        }
+        function transpuesta(matriz,n){
+            var matrizTranspuesta = [];
+            for(var i = 0; i<n; i++){
+                matrizTranspuesta.push([]);
+            }
+            for(var i = 0;i<n;i++){
+                for(var x = 0;x<n;x++){
+                    matrizTranspuesta[x][i] = matriz[i][x];
+                }
+            }
+            return matrizTranspuesta;
         }
         function limpiar(){
             
