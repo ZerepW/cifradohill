@@ -19,7 +19,7 @@
         <form>
             <div class="form-group">
                 <label for="alfabeto">Alfabeto</label>
-                <input type="text" class="form-control text-uppercase" id="alfabeto" aria-describedby="alfabeto" placeholder="EJEMPLO: ABCDEF1234" maxlength="256">
+                <input type="text" value="ABCDEFGHIJKLMNÑOPQRSTUVWXYZ" class="form-control text-uppercase" id="alfabeto" aria-describedby="alfabeto" placeholder="EJEMPLO: ABCDEF1234" maxlength="256">
                 <small id="alfabetoHelp" class="form-text text-muted">Alfabeto a utilizar, máximo 256 caracteres.</small>
             </div><br>
 
@@ -53,7 +53,7 @@
         <br>
             <div class="form-group">
                 <label for="clave">Resultado</label>
-                <textarea class="form-control" id="clave" rows="4">ASDHASDFGG</textarea>
+                <textarea class="form-control" id="resultado" rows="4">ASDHASDFGG</textarea>
             </div>
             <hr>
             <span class="float-left">Hecho por <a href="http://luisarturozerep.cloudapp.net">Luis Arturo Pérez Díaz</a> || Alma Karolina Barrera Rodríguez</span>
@@ -64,25 +64,27 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
     <script>
         function cifrar(){
-            alfabeto = document.getElementById("alfabeto");
+            alfabeto = document.getElementById("alfabeto"); //INPUT DEL ALFABETO
             alfabeto = alfabeto.value.toUpperCase();
             
-            textocifrar = document.getElementById("cifrar");
+            textocifrar = document.getElementById("cifrar"); // INPUT DEL TEXTO A CIFRAR
             textocifrar = textocifrar.value.toUpperCase();
             textocifrarlong = textocifrar.length;
+
+            resultadoArea = document.getElementById("resultado");
             
-            clave = document.getElementById("clave");
+            clave = document.getElementById("clave"); // INPUT DE LA CLAVE
             clave = clave.value.toUpperCase();
             clavelong = clave.length;
 
-            nmatriz = document.getElementById("matriz");
+            nmatriz = document.getElementById("matriz"); // INPUT DE LA MATRIZ NXN
             nmatriz = nmatriz.value;
 
             multiplo = textocifrarlong % nmatriz; //CHECAR SI ES MULTIPLO DE N
             permitido = true;
 
-            if(multiplo == 0){
-                for (var i = 0; i < textocifrar.length; i++) {
+            if(multiplo == 0){ //Texto debe ser multiplo de N
+                for (var i = 0; i < textocifrar.length; i++) { //Comprueba que las letras del texto a cifraresten en el alfabeto
                     var indice = null;
 		    		for (var x = 0; x < alfabeto.length; x++) {
 		    			if(alfabeto[x] == textocifrar[i]){
@@ -95,22 +97,94 @@
                         break;
 		    		}
                 }
-                if(permitido){
-                    if((nmatriz*nmatriz)==clavelong){ //LA CLAVE ES UNA RC Exacta
-                        result = "";
-                        for(var bloq = 0; bloq<textocifrarlong; bloq += parseInt(nmatriz)){
-                            var arregloC = [];
-                            for(var indice = 0; indice < nmatriz; indice++){
-                                arregloC.push(parseInt(bloq)+parseInt(indice));
+                for (var i = 0; i < clavelong; i++) { //Comprueba que las letras de la clave esten en el alfabeto
+                    var indice = null;
+		    		for (var x = 0; x < alfabeto.length; x++) {
+		    			if(alfabeto[x] == clave[i]){
+		    				indice = x;
+		    				break;
+		    			}
+		    		}
+		    		if(indice == null){
+		    			permitido=false;
+                        break;
+		    		}
+                }
+                
+
+                if(permitido){ //Si no hay errores
+                    var arrAlfabeto =[];
+                    for(var i = 0; i<alfabeto.length;i++){ //Comprobar que no haya letras repetidas en el alfabeto
+                        for(var x = 0; x<arrAlfabeto.length;x++){
+                            if(alfabeto[i] == arrAlfabeto[x]){
+                                permitido = false;
+                                break;
                             }
-                            for(var indice = 0; indice < nmatriz; indice++){
-                                arregloC
-                                alert(arregloC[indice]);
+                        }
+                        if(permitido == true){
+                            arrAlfabeto.push(alfabeto[i]);
+                        }else{
+                            break;
+                        }
+                    }
+                    if(permitido){ //Si no hay letras que se repitan en el alfabeto
+                        if((nmatriz*nmatriz)==clavelong){ //SI LA CLAVE ES UNA RAIZ CUADRADA Exacta
+                            var matrizClave = [];
+                            for(var i = 0; i<clavelong;i++){
+                                for(var x = 0; x<arrAlfabeto.length;x++){
+                                    if(clave[i] == arrAlfabeto[x]){
+                                        matrizClave.push(x);
+                                        break;
+                                    }
+                                }
                             }
-                            alert("Arreglo C: " + arregloC);
+                            //alert(matrizClave);
+                            var matrizRes = [];
+                            for(var i = 0; i<textocifrar.length;i += parseInt(nmatriz)){
+                                var matrizCL = [];
+                                for(var x = 0; x<parseInt(nmatriz);x++){
+                                    matrizCL.push(textocifrar[i+x]);
+                                }
+                                var matrizCLNum = [];
+                                for(var x = 0; x<matrizCL.length; x++){
+                                    for(var y = 0; y<arrAlfabeto.length;y++){
+                                        if(matrizCL[x] == arrAlfabeto[y]){
+                                            matrizCLNum.push(y);
+                                            break;
+                                        }
+                                    }
+                                }
+                                //alert(matrizCL + " " + matrizCLNum);
+                                for(var x = 0; x<parseInt(nmatriz); x++){
+                                    var aux = 0;
+                                    for(var y = 0;y<matrizCLNum.length;y++){
+                                        aux += matrizCLNum[y] * matrizClave[y+(x*parseInt(nmatriz))];
+                                        
+                                        //alert(matrizCLNum[y] + " x " + matrizClave[y+(x*parseInt(nmatriz))] + "=" + aux);
+                                    }
+                                    //alert("next");
+                                    aux = aux % arrAlfabeto.length;
+                                    matrizRes.push(aux);
+                                    aux = 0;
+                                }
+                                matrizCL = [];   
+                                matrizCLNum = [];                             
+                            }
+                            var resultado = "";                            
+                            for(var i = 0; i< matrizRes.length;i++){ // Metemos el resultado a una variable
+                                for(var x = 0; x< arrAlfabeto.length;x++){
+                                    if(matrizRes[i] == x){
+                                        resultado = resultado + arrAlfabeto[x];
+                                    }
+                                }
+                            }
+                            resultadoArea.value = resultado;
+                            //alert(resultado);
+                        }else{
+                            alert("ERROR! La clave no es una raiz cuadrada exacta");
                         }
                     }else{
-                        alert("ERROR! La clave no es una raiz cuadrada exacta");
+                        alert("ERROR! Hay letras que se repiten en el alfabeto")
                     }
                 }else{
                     alert("ERROR! Hay letras que no están en el abecedario")
